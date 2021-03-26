@@ -30,13 +30,13 @@ function connectOneTimeToDatabase() {
 const sql = connectOneTimeToDatabase();
 
 export async function getUsers() {
-  const items = await sql`SELECT * FROM shop_items`;
+  const items = await sql`SELECT * FROM users`;
   return camelcaseKeys(items);
 }
 
 export async function getUserById(id) {
   const matchingItem = camelcaseKeys(
-    await sql`SELECT * FROM shop_items WHERE id = ${id}`,
+    await sql`SELECT * FROM users WHERE id = ${id}`,
   );
   return matchingItem;
 }
