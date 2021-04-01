@@ -1,9 +1,9 @@
 import camelcaseKeys from 'camelcase-keys';
 import postgres from 'postgres';
-import { generateToken } from './sessions';
-import setPostgresDefaultsOnHeroku from './setPostgresDefaultsOnHeroku';
+// import { generateToken } from './sessions';
+// import setPostgresDefaultsOnHeroku from './setPostgresDefaultsOnHeroku';
 
-setPostgresDefaultsOnHeroku();
+// setPostgresDefaultsOnHeroku();
 
 // Read in the values from the .env file
 // (which should be ignored in Git!)
@@ -222,12 +222,12 @@ export async function getUserWithHashedPasswordByUsername(username) {
   return camelcaseRecords(users)[0];
 }
 
-export async function createUser(username, passwordHash) {
+export async function createUser(username, password) {
   const users = await sql`
     INSERT INTO users
       (username, password_hash)
     VALUES
-      (${username}, ${passwordHash})
+      (${username}, ${password})
     RETURNING id, username
   `;
   return camelcaseRecords(users)[0];

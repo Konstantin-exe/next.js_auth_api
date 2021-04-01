@@ -1,7 +1,9 @@
-import { createUser, getUserByUsername } from '../../util/database';
+import { createUser, getUserByUsername } from '../../utils/database';
+import { hashPassword } from '../../utils/auth';
 
 export default async function handler(req, res) {
   const { username, password } = req.body;
+  console.log(req.body);
 
   // const sessionToken = req.cookies.session;
 

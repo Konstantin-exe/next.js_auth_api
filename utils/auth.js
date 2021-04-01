@@ -2,20 +2,22 @@ import argon2 from 'argon2';
 
 // const tokens = new Tokens();
 
-export async function hashPassword(password: string) {
+export async function hashPassword(password) {
   return argon2.hash(password);
+
+  return;
 }
 
-export async function doesPasswordMatchPasswordHash(
-  password: string,
-  passwordHash: string,
-) {
-  return argon2.verify(passwordHash, password);
-}
+// export async function doesPasswordMatchPasswordHash(
+//   password: string,
+//   passwordHash: string,
+// ) {
+//   return argon2.verify(passwordHash, password);
+// }
 
-function createCsrfSecret(sessionToken: string) {
-  return sessionToken + process.env.CSRF_SECRET_SALT;
-}
+// function createCsrfSecret(sessionToken: string) {
+//   return sessionToken + process.env.CSRF_SECRET_SALT;
+// }
 
 // export function createCsrfToken(sessionToken: string) {
 //   const secret = createCsrfSecret(sessionToken);
