@@ -1,6 +1,6 @@
 import camelcaseKeys from 'camelcase-keys';
 import postgres from 'postgres';
-// import { generateToken } from './sessions';
+import { generateToken } from './sessions';
 // import setPostgresDefaultsOnHeroku from './setPostgresDefaultsOnHeroku';
 
 // setPostgresDefaultsOnHeroku();
@@ -126,6 +126,7 @@ export async function isSessionTokenNotExpired(sessionToken) {
 
 export async function createSessionWithFiveMinuteExpiry() {
   const token = generateToken();
+  console.log(token);
 
   const sessions = await sql`
     INSERT INTO sessions

@@ -3,9 +3,8 @@ import argon2 from 'argon2';
 // const tokens = new Tokens();
 
 export async function hashPassword(password) {
+  // console.log(password);
   return argon2.hash(password);
-
-  return;
 }
 
 // export async function doesPasswordMatchPasswordHash(
