@@ -2,10 +2,12 @@ import {
   createSessionByUserId,
   createUser,
   getUserByUsername,
+  getUserWithHashedPasswordByUsername,
 } from '../../utils/database';
 import { hashPassword } from '../../utils/auth';
 import Cors from 'cors';
 import { createSessionWithCookie } from '../../utils/sessions';
+import { doesPasswordMatchPasswordHash } from '../../utils/auth';
 import cookie from 'cookie';
 
 const cors = Cors({
@@ -28,33 +30,37 @@ function runMiddleware(req, res, fn) {
 export default async function handler(req, res) {
   await runMiddleware(req, res, cors);
   const { username, password } = req.body;
-  console.log(username, password);
+  // const sessionToken = req.cookies.session;
 
-  const userAlreadyExists =
-    typeof (await getUserByUsername(username)) !== 'undefined';
+  const userWithPasswordHash = await getUserWithHashedPasswordByUsername(
+    username,
+  );
 
-  if (userAlreadyExists) {
-    return res.status(409).send({
-      errors: [{ message: 'User already exists with username' }],
+  // Error out if the username does not exist
+  if (!userWithPasswordHash) {
+    return res.status(401).send({
+      errors: [{ message: 'Username or password does not match' }],
       user: null,
     });
   }
 
-  // 1. save user
-  const passwordHash = await hashPassword(password);
-  const user = await createUser(username, passwordHash);
+  const passwordHash = userWithPasswordHash.passwordHash;
 
-  // 2. create session
+  const passwordMatches = await doesPasswordMatchPasswordHash(
+    password,
+    passwordHash,
+  );
+  // Error out if the password does not match the hash
+  if (!passwordMatches) {
+    return res.status(401).send({
+      errors: [{ message: 'Username or password does not match' }],
+      user: null,
+    });
+  }
 
-  // const sessionToken = req.cookies.session;
-  // const test = createSessionWithFiveMinuteExpiry();
-  // console.log(test);
+  const session = await createSessionByUserId(userWithPasswordHash.id);
+  console.log(passwordMatches);
 
-  // const sessionToken = await createSessionWithCookie();
-  const session = await createSessionByUserId(user.id);
-  console.log(session);
-
-  // if (!doesCsrfTokenMatchSessionToken(csrfToken, sessionToken)) {
   const maxAge = 60 * 60 * 72;
   res.setHeader(
     'Set-Cookie',
@@ -66,12 +72,6 @@ export default async function handler(req, res) {
       path: '/',
     }),
   );
-  //   return res.status(401).send({
-  //     errors: [{ message: 'CSRF Token does not match' }],
-  //     user: null,
-  //   });
-  // }
-
   res.status(200);
-  res.send({ user: user });
+  res.send({ user: 'user' });
 }

@@ -7,12 +7,9 @@ export async function hashPassword(password) {
   return argon2.hash(password);
 }
 
-// export async function doesPasswordMatchPasswordHash(
-//   password: string,
-//   passwordHash: string,
-// ) {
-//   return argon2.verify(passwordHash, password);
-// }
+export async function doesPasswordMatchPasswordHash(password, passwordHash) {
+  return argon2.verify(passwordHash, password);
+}
 
 // function createCsrfSecret(sessionToken: string) {
 //   return sessionToken + process.env.CSRF_SECRET_SALT;
